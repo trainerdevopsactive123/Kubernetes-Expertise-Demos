@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+  labels:
+    app: myservice
+spec:
+  volumes:
+    - name: shared-data
+      emptyDir: {}
+  initContainers:
+    - name: init-myservice
+      image: busybox
+      command:
+        - "sh"
+        - "-c"
+        - 'echo "Welcome to the Kubernetes demo on AWS!" > /usr/share/nginx/html/index.html && chmod 644 /usr/share/nginx/html/index.html'
+      volumeMounts:
+        - name: shared-data
+          mountPath: /usr/share/nginx/html
+  containers:
+    - name: myservice
+      image: nginx
+      volumeMounts:
+        - name: shared-data
+          mountPath: /usr/share/nginx/html
